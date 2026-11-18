@@ -1,0 +1,120 @@
+import { Chess } from "https://cdn.jsdelivr.net/npm/chess.js@1.4.0/+esm";
+
+const game = new Chess();
+const boardEl = document.querySelector("#board");
+const statusEl = document.querySelector("#status");
+const movesEl = document.querySelector("#moves");
+const strengthEl = document.querySelector("#strength");
+const strengthValue = document.querySelector("#strengthValue");
+let selected = null;
+let flipped = false;
+let thinking = false;
+
+const glyph = {wk:"♔",wq:"♕",wr:"♖",wb:"♗",wn:"♘",wp:"♙",bk:"♚",bq:"♛",br:"♜",bb:"♝",bn:"♞",bp:"♟"};
+const values = {p:100,n:320,b:335,r:500,q:900,k:20000};
+
+function render(){
+  boardEl.innerHTML = "";
+  const files = flipped ? "hgfedcba" : "abcdefgh";
+  const ranks = flipped ? "12345678" : "87654321";
+  const legal = selected ? game.moves({square:selected,verbose:true}) : [];
+  for(const rank of ranks){
+    for(const file of files){
+      const square = file + rank;
+      const piece = game.get(square);
+      const el = document.createElement("button");
+      el.className = "square " + ((files.indexOf(file)+ranks.indexOf(rank))%2===0?"light":"dark");
+      el.type = "button";
+      el.setAttribute("role","gridcell");
+      el.setAttribute("aria-label",square);
+      if(piece) el.textContent = glyph[piece.color+piece.type];
+      if(square===selected) el.classList.add("selected");
+      if(legal.some(m=>m.to===square)) el.classList.add(piece?"capture":"legal");
+      el.addEventListener("click",()=>onSquare(square));
+      boardEl.append(el);
+    }
+  }
+  const history = game.history();
+  movesEl.innerHTML = "";
+  for(let i=0;i<history.length;i+=2){
+    const li=document.createElement("li");
+    li.textContent=history[i]+(history[i+1]?"   "+history[i+1]:"");
+    movesEl.append(li);
+  }
+  if(game.isCheckmate()) statusEl.textContent = game.turn()==="w" ? "Schachmatt – der Bot gewinnt." : "Schachmatt – du gewinnst!";
+  else if(game.isDraw()) statusEl.textContent = "Remis.";
+  else statusEl.textContent = (game.turn()==="w"?"Du bist am Zug.":"Bot denkt …")+(game.isCheck()?" Schach!":"");
+}
+
+function onSquare(square){
+  if(thinking || game.isGameOver() || game.turn()!=="w") return;
+  const piece=game.get(square);
+  if(selected){
+    const move=game.moves({square:selected,verbose:true}).find(m=>m.to===square);
+    if(move){
+      game.move({from:selected,to:square,promotion:"q"});
+      selected=null; render(); window.setTimeout(botMove,250); return;
+    }
+  }
+  selected = piece && piece.color==="w" ? square : null;
+  render();
+}
+
+function evaluate(){
+  if(game.isCheckmate()) return game.turn()==="w" ? -100000 : 100000;
+  if(game.isDraw()) return 0;
+  let score=0;
+  for(const row of game.board()) for(const p of row) if(p) score+=(p.color==="b"?1:-1)*values[p.type];
+  return score;
+}
+
+function chooseBotMove(){
+  const moves=game.moves({verbose:true});
+  if(!moves.length) return null;
+  const level=Number(strengthEl.value);
+  const scored=moves.map(move=>{
+    game.move(move);
+    let score=evaluate();
+    if(level>=5 && !game.isGameOver()){
+      const replies=game.moves({verbose:true});
+      let worst=Infinity;
+      for(const reply of replies){
+        game.move(reply);
+        const responseScore=evaluate();
+        game.undo();
+        worst=Math.min(worst,responseScore);
+      }
+      score=worst;
+    }
+    game.undo();
+    // Higher levels reduce randomness; lower levels sample more freely.
+    const noise=(Math.random()-0.5)*(11-level)*95;
+    return {move,score:score+noise};
+  });
+  scored.sort((a,b)=>b.score-a.score);
+  const pool=Math.max(1,Math.ceil((11-level)/2));
+  return scored[Math.floor(Math.random()*Math.min(pool,scored.length))].move;
+}
+
+function botMove(){
+  if(game.isGameOver() || game.turn()!=="b") return;
+  thinking=true; render();
+  const delay=900+Math.random()*1500;
+  window.setTimeout(()=>{
+    const move=chooseBotMove();
+    if(move) game.move(move);
+    thinking=false; render();
+  },delay);
+}
+
+document.querySelector("#newGame").addEventListener("click",()=>{
+  game.reset(); selected=null; thinking=false; render();
+});
+document.querySelector("#undo").addEventListener("click",()=>{
+  if(thinking) return;
+  if(game.history().length){game.undo(); if(game.turn()==="b") game.undo();}
+  selected=null; render();
+});
+document.querySelector("#flip").addEventListener("click",()=>{flipped=!flipped;render();});
+strengthEl.addEventListener("input",()=>{strengthValue.value=strengthEl.value+" / 10";});
+render();
