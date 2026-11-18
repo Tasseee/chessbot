@@ -1,22 +1,15 @@
-# Chess Test Bot
+# Chessbot – lokale Trainingspartie
 
-A small Microsoft Edge extension project for configuring an openly used chess-training bot in a local or mutually agreed test environment.
+Ein kleines, offen sichtbares Schach-Übungsbrett. Du spielst Weiß, der Bot spielt Schwarz.
 
-## Scope
+## Benutzung
+1. Öffne **index.html** in Microsoft Edge oder einem anderen aktuellen Browser. Wenn der Browser ES-Module beim direkten Öffnen blockiert, starte im Projektordner einen lokalen Server, z. B. mit `python -m http.server 8000`, und öffne `http://localhost:8000`.
+2. Klicke auf eine weiße Figur und danach auf das Zielfeld.
+3. Der Bot antwortet automatisch.
+4. Stelle die ungefähre Spielstärke über den Regler ein. Stufen 1–10 sind keine garantierten Elo-Werte.
+5. „Neue Partie“ startet neu; „Zug zurück“ nimmt deinen letzten Zug und die Bot-Antwort zurück.
 
-- This starter adds a settings popup only.
-- It does not read chess positions from third-party websites, inject moves, or operate on live games.
-- Use any future automatic-play feature only on your own test board or in a bot match where everyone knows a bot is playing.
+## Hinweis
+Dies ist eine eigenständige Trainingsseite. Sie liest keine fremden Webseiten aus und führt dort keine Züge aus. Nutze sie für eigene Übungen oder vereinbarte Bot-Partien, bei denen allen klar ist, dass ein Bot mitspielt.
 
-## Settings
-
-- Strength: approximate Stockfish skill setting (not a guaranteed Elo rating).
-- Thinking delay: random delay range in seconds.
-
-## Install in Edge
-
-1. Open `edge://extensions`.
-2. Enable **Developer mode**.
-3. Choose **Load unpacked** and select this project folder.
-
-No engine is included yet; this is the settings-only starter.
+Die Schachregeln kommen aus [chess.js](https://github.com/jhlywa/chess.js), das beim Öffnen über jsDelivr geladen wird. Daher ist eine Internetverbindung nötig.
