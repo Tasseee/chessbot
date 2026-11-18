@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Chess Test Bot",
+  "version": "0.1.0",
+  "description": "Settings for a local chess-training bot test.",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "storage"
+  ]
+}
