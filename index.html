@@ -12,17 +12,20 @@
     <header>
       <p class="eyebrow">TASSEEE / CHESSBOT</p>
       <h1>Chessbot – Trainingspartie</h1>
-      <p class="notice">Offenes Übungsbrett: Du spielst sichtbar gegen einen Bot. Nicht für heimliche Hilfe in Partien auf fremden Websites gedacht.</p>
+      <p class="notice">Offenes Übungsbrett: Du spielst sichtbar gegen einen Bot. Es ist eine eigenständige Trainingsseite und kein versteckter Helfer für fremde Live-Partien.</p>
     </header>
     <section class="layout">
       <div class="board-wrap">
         <div id="board" class="board" role="grid" aria-label="Schachbrett"></div>
       </div>
       <aside class="panel">
-        <div class="status" id="status" aria-live="polite">Lade Schachbrett …</div>
-        <label for="strength">Bot-Stärke (ungefähr)</label>
-        <div class="range-row"><input id="strength" type="range" min="1" max="10" value="4"><output id="strengthValue">4 / 10</output></div>
-        <p class="hint">Die Stufen sind Spielstärken, keine verlässlichen Elo-Werte.</p>
+        <div class="status" id="status" aria-live="polite">Stockfish wird geladen …</div>
+        <label for="elo">Bot-Stärke</label>
+        <div class="range-row">
+          <input id="elo" type="range" min="400" max="3000" step="50" value="1200">
+          <output id="eloValue" for="elo">1200 Elo</output>
+        </div>
+        <p class="hint" id="eloHint">Die gewählte Spielstärke ist ein ungefährer Zielwert, keine garantierte Wertungszahl.</p>
         <div class="actions">
           <button id="newGame">Neue Partie</button>
           <button id="undo" class="secondary">Zug zurück</button>
@@ -30,10 +33,10 @@
         </div>
         <h2>Züge</h2>
         <ol id="moves" class="moves"></ol>
-        <p class="hint">Du spielst Weiß. Tippe zuerst deine Figur und danach das Zielfeld an.</p>
+        <p class="hint">Du spielst Weiß. Klicke zuerst auf eine Figur und danach auf das Zielfeld. Der Bot antwortet nach etwa 3–8 Sekunden.</p>
       </aside>
     </section>
-    <footer>Der Bot zieht automatisch nach deinem Zug. Die Engine läuft im Browser über chess.js.</footer>
+    <footer>Schachregeln: chess.js · Engine: Stockfish 19 Lite (WebAssembly)</footer>
   </main>
 </body>
 </html>
