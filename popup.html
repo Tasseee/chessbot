@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chess Test Bot</title>
+  <style>
+    body { font: 14px system-ui, sans-serif; width: 290px; padding: 14px; color: #202124; }
+    h1 { font-size: 18px; margin: 0 0 12px; }
+    label { display: block; margin: 14px 0 6px; font-weight: 600; }
+    input[type="range"] { width: 100%; }
+    .value { font-variant-numeric: tabular-nums; }
+    .note { color: #555; font-size: 12px; line-height: 1.4; }
+    .row { display: flex; justify-content: space-between; }
+  </style>
+</head>
+<body>
+  <h1>Chess Test Bot</h1>
+  <label for="skill">Engine-Stärke (ungefähr)</label>
+  <div class="row"><span>Schwächer</span><output id="skillValue" class="value">10</output><span>Stärker</span></div>
+  <input id="skill" type="range" min="0" max="20" step="1" value="10">
+  <p class="note">Das ist eine ungefähre Stockfish-Skill-Einstellung, keine garantierte Elo-Zahl.</p>
+
+  <label for="delayMin">Zufällige Denkpause (Sekunden)</label>
+  <div class="row"><span>Minimum</span><output id="delayMinValue" class="value">3</output></div>
+  <input id="delayMin" type="range" min="0" max="30" step="1" value="3">
+  <div class="row"><span>Maximum</span><output id="delayMaxValue" class="value">8</output></div>
+  <input id="delayMax" type="range" min="0" max="30" step="1" value="8">
+  <p id="status" class="note" aria-live="polite">Einstellungen werden lokal gespeichert.</p>
+  <script src="popup.js"></script>
+</body>
+</html>
